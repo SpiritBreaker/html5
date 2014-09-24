@@ -1,0 +1,46 @@
+
+<html>
+	<head>
+	<style>
+		.realBtn{ 
+			position: absolute;
+			top: 90px;  
+			left:188px;
+			z-index:1;
+			width:104px;
+			height:42px;
+		}
+		iframe{
+			width: 900px;
+			height:250px;
+			position: absolute;
+			top: -100px;
+			left: -500px;  
+			z-index: 100;
+			
+			/**hide from view */
+			-moz-opacity: 0;
+			opacity: 0.1;
+			filter: alpha(opacity=0);  
+			
+		}
+	</style>	
+	<script type="text/javascript" src="http://su.bdimg.com/static/superplus/js/lib/jquery-1.10.2_d88366fd.js"> </script>
+	</head>
+	<body>
+		<iframe src="http://www.baidu.com" scrolling="no"></iframe>
+		<input class="realBtn" type="button" value="aaaaaa111" />	
+		<input id="crackId" type="button" value="crack" style="top:300px;position: absolute;"/>	
+	</body>
+	
+	<script>
+	$("#crackId").click(function(){
+		$("iframe").each(function(){
+			//if(!$(this).is(":visible")) $(this).remove(); 如果这个element不可见，则remove
+			if($(this).css("opacity") <= 0.2) {
+		  		$(this).remove();
+			}
+		});
+	});
+	</script>
+</html>

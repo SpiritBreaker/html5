@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
+<html>
+<head>
+<title>WebSocket Demo</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<script type="text/javascript" src="jquery-1.11.1.min.js"> </script>
+<script type="text/javascript" src="jquery.websocket.js"> </script>
+</head>
+<body>
+	<div>
+		<div id="valueLabel"></div>
+		<textarea rows="20" cols="30" style="margin: 2px; width: 407px;" id="contentId"></textarea>
+		<br /> <input name="message" id="messageId" />
+		<button id="sendBtn" onClick="javascript:sendMsg()">Send</button>
+		<button id="startBtn" onClick="javascript:startServer()">Start Server</button>
+		<button id="closeBtn" onClick="javascript:closeServer()">Close Server</button>
+	</div>
+
+	<script type="text/javascript">
+		//=========启动一个websocket
+		var s = $.connect({
+			protocol:'ws',
+			onOpen : function(event) {//optional
+				document.getElementById("valueLabel").innerHTML = "server connection established";
+				console.log("start", event);
+			},
+			onError : function(event) {//optional
+				alert("发生了错误,onError可省略不写");
+			},
+			onSend : function(msg) {//optional
+				alert("发送数据额外的代码,可省略不写");
+			},
+			onMessage : function(result, nTime) {
+				console.log("message", event);
+				log(result);
+				log("最近一次发送数据到现在接收一共使用时间:" + nTime);
+			}
+		});
+		var log = function(s) {
+			if (document.readyState !== "complete") {
+				log.buffer.push(s);
+			} else {
+				document.getElementById("contentId").innerHTML += (s + "\n");
+			}
+		}
+		
+		function closeServer(){
+			s.close();
+		}
+
+		function sendMsg() {
+			var msg = document.getElementById("messageId");
+			s.send(msg.value);
+		}
+	</script>
+</body>
+</html>
