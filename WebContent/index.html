@@ -1,52 +1,85 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<!DOCTYPE html>
 <html>
 <head>
 <title>WebSocket Demo</title>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <script type="text/javascript" src="jquery-1.11.1.min.js"> </script>
 <script type="text/javascript" src="jquery.websocket.js"> </script>
+<style>
+.red {
+	font-weight: bold;
+	color: red;
+}
+
+.content {
+	border: solid #03A9F4;
+	box-shadow: 0 0 10px #FF9800;
+	border-radius: 5px;
+	font-size: 20px;
+	width: 1200px;
+	height: 580px;
+	overflow: auto;
+	background:rgb(226, 241, 175);
+}
+</style>
 </head>
 <body>
 	<div>
 		<div id="valueLabel"></div>
-		<textarea rows="20" cols="30" style="margin: 2px; width: 407px;" id="contentId"></textarea>
+		<div class="content" id="contentId"></div>
 		<br /> <input name="message" id="messageId" />
 		<button id="sendBtn" onClick="javascript:sendMsg()">Send</button>
-		<button id="startBtn" onClick="javascript:startServer()">Start Server</button>
-		<button id="closeBtn" onClick="javascript:closeServer()">Close Server</button>
+		<button id="startBtn" onClick="javascript:startServer()">Start</button>
+		<button id="closeBtn" onClick="javascript:closeServer()">Close</button>
+		<button id="clearBtn">Clear</button>
 	</div>
 
 	<script type="text/javascript">
-		//=========启动一个websocket
-		var s = $.connect({
-			protocol:'ws',
-			onOpen : function(event) {//optional
-				document.getElementById("valueLabel").innerHTML = "server connection established";
-				console.log("start", event);
-			},
-			onError : function(event) {//optional
-				alert("发生了错误,onError可省略不写");
-			},
-			onSend : function(msg) {//optional
-				alert("发送数据额外的代码,可省略不写");
-			},
-			onMessage : function(result, nTime) {
-				console.log("message", event);
-				log(result);
-				log("最近一次发送数据到现在接收一共使用时间:" + nTime);
-			}
+		$("#clearBtn").on('click',function(){
+			$("#contentId").html("");
 		});
+		
 		var log = function(s) {
 			if (document.readyState !== "complete") {
 				log.buffer.push(s);
 			} else {
-				document.getElementById("contentId").innerHTML += (s + "\n");
+				if(s.charAt(0)=='【'){
+					$("#contentId").append("<font class='red'>"+s+"</font></br>");
+				}else{
+					$("#contentId").append(s+"</br>");
+				}
+				
+				
+				//document.getElementById("contentId").innerHTML += (s + "\n");
+				var d = document.getElementById("contentId").scrollHeight;
+				document.getElementById("contentId").scrollTop = d;
 			}
 		}
 		
+		var s;
 		function closeServer(){
 			s.close();
+		}
+		
+		function startServer(){
+			s = $.connect({
+				protocol:'ws',
+				onOpen : function(event) {//optional
+					document.getElementById("valueLabel").innerHTML = "server connection established";
+					console.log("start", event);
+				},
+				onError : function(event) {//optional
+					alert("发生了错误,onError可省略不写");
+				},
+				onSend : function(msg) {//optional
+					alert("发送数据额外的代码,可省略不写");
+				},
+				onMessage : function(result, nTime) {
+					//console.log("message", event);
+					log(result);
+					//log("最近一次发送数据到现在接收一共使用时间:" + nTime);
+				}
+			});
 		}
 
 		function sendMsg() {
